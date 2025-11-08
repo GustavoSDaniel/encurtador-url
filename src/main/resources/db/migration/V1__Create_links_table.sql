@@ -1,0 +1,7 @@
+CREATE TABLE links (
+
+     id BIGSERIAL PRIMARY KEY,
+     long_url TEXT NOT NULL,
+     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+
+);
