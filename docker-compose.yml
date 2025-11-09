@@ -13,7 +13,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
-      - JWT_SECRET=${JWT_SECRET}
+      - MY_SALT=${MY_SALT}
     ports:
       - "5050:5050"
     networks:
