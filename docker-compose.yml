@@ -14,6 +14,7 @@ services:
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
       - MY_SALT=${MY_SALT}
+      - DOMINIO_APP=${DOMINIO_APP}
     ports:
       - "5050:5050"
     networks:
@@ -46,7 +47,7 @@ services:
 
   flyway:
     image: flyway/flyway
-    container_name: flyway-migrator
+    container_name: flyway-migrator-encurtador-url
     environment:
       - FLYWAY_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
       - FLYWAY_USER=${POSTGRES_USER}
@@ -78,7 +79,7 @@ services:
 
   redis:
     image: redis:8.2.2
-    container_name: redis-cache
+    container_name: redis-encurtador-url
     ports:
       - "5053:6379"
     volumes:
