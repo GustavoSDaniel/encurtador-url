@@ -1,5 +1,6 @@
 package com.gsuatavosdaniel.encurtador_url.Exception;
 
+import com.gsuatavosdaniel.encurtador_url.links.LinkNotFoundException;
 import com.gsuatavosdaniel.encurtador_url.links.UrlJaExisteException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,5 +44,20 @@ public class GlobalExceptionHandle {
         );
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(LinkNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleLinkNotFound(LinkNotFoundException ex) {
+
+        log.warn("Link não encontrado {}", ex.getMessage());
+
+        ErrorResponse error = new ErrorResponse(
+                "Link não Encontrado",
+                "O link buscado não foi encontrado",
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+
     }
 }
