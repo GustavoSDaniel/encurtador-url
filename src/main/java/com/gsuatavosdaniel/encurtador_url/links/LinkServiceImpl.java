@@ -79,7 +79,7 @@ public class LinkServiceImpl implements LinkService {
 
         if (allLinks.isEmpty()) {
 
-            log.info("Nnenhum Link encontrado");
+            log.info("Nenhum Link encontrado");
 
             return Page.empty(pageable);
         }
