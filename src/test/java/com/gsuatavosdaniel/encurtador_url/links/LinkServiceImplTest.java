@@ -76,6 +76,41 @@ class LinkServiceImplTest {
         }
     }
 
+    @Nested
+    class getOriginalLink {
+
+        @Test
+        @DisplayName("Should get original link with success")
+        void shouldGetOriginalLinkWithSuccess() {
+
+            Long id = 1L;
+
+            String input = "XdTo6OLk";
+
+            Links linkDB = new Links("https://github.com/GustavoSDaniel");
+
+            when(hashids.decode(input)).thenReturn( new long[]{id});
+            when(linksRepository.findById(id)).thenReturn(Optional.of(linkDB));
+
+            String output = linkService.getOriginalLink(input);
+
+            assertNotNull(output);
+
+            verify(linksRepository).findById(id);
+            verify(hashids).decode(input);
+
+        }
+    }
+
+    @Nested
+    class getAllLinks{
+
+        @Test
+        @DisplayName("Should get all links with success")
+        void shouldGetAllLinksWithSuccess(){
+
+        }
+    }
 
     @Nested
     class deleteLink{
