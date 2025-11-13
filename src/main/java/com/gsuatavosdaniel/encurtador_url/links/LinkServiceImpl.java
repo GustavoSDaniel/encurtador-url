@@ -67,6 +67,8 @@ public class LinkServiceImpl implements LinkService {
 
         long idLink = ids[0];
 
+        log.info("ID do Link Encontrado com sucesso: {}", idLink);
+
         return linksRepository.findById(idLink)
                 .map(Links::getLongUrl)
                 .orElseThrow(LinkNotFoundException::new);
