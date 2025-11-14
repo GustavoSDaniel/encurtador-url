@@ -1,4 +1,4 @@
-### GET request to example server
-DELETE  http://localhost:5050/api/v1/links/1
+### DELETE apagar URL
+DELETE  http://localhost:5050/ID
 
 ###
