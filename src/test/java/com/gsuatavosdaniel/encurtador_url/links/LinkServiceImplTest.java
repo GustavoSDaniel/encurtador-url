@@ -8,15 +8,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LinkServiceImplTest {
@@ -108,6 +113,41 @@ class LinkServiceImplTest {
         @Test
         @DisplayName("Should get all links with success")
         void shouldGetAllLinksWithSuccess(){
+
+            Pageable pageable = Pageable.unpaged();
+
+            Links link1 = new Links("https://github.com/GustavoSDaniel");
+
+            Links link2 = new Links("https://www.linkedin.com/feed/");
+
+            Links link3 = new Links("https://x.com/DevDanielSilva");
+
+            List<Links> linksDB =  List.of(link1, link2, link3);
+
+            Page<Links> linksPage = new PageImpl<>(linksDB, pageable, linksDB.size());
+
+            LinkResponse linkResponse1 = new LinkResponse("https://github.com/GustavoSDaniel");
+
+            LinkResponse linkResponse2 = new LinkResponse("https://www.linkedin.com/feed/");
+
+            LinkResponse linkResponse3 = new LinkResponse("https://x.com/DevDanielSilva");
+
+            when(linksRepository.findAll(pageable)).thenReturn(linksPage);
+
+           when(linkMapper.toLinkResponse(link1)).thenReturn(linkResponse1);
+
+           when(linkMapper.toLinkResponse(link2)).thenReturn(linkResponse2);
+
+           when(linkMapper.toLinkResponse(link3)).thenReturn(linkResponse3);
+
+           Page<LinkResponse> output = linkService.getAllLinks(pageable);
+
+           assertNotNull(output);
+           assertEquals(3, output.getTotalElements());
+
+           verify(linkMapper, times(3)).toLinkResponse(any(Links.class));
+           verify(linksRepository).findAll(pageable);
+
 
         }
     }
