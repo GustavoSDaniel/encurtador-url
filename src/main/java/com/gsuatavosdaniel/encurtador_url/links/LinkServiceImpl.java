@@ -4,6 +4,7 @@ import org.hashids.Hashids;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@CacheConfig(cacheNames = "links")
 public class LinkServiceImpl implements LinkService {
 
     private final LinksRepository linksRepository;
@@ -28,6 +30,7 @@ public class LinkServiceImpl implements LinkService {
     String dominioUrl;
 
     @Override
+   @CacheEvict(cacheNames = "links-page", allEntries = true)
     public LinkResponse savedLink(LinkRequest linkRequest) {
 
         Optional<Links> linkExiste = linksRepository.findByLongUrl(linkRequest.longUrl());
@@ -54,6 +57,7 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
+    @Cacheable(key = "#linkCurto")
     public String getOriginalLink(String linkCurto) {
 
         long[] ids = hashids.decode(linkCurto);
@@ -75,6 +79,9 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
+    @Cacheable(
+            cacheNames = "links-page",
+            key = "'page-' + #pageable.pageNumber   + '-size-' + #pageable.pageSize + '-sort-' + #pageable.sort.toString()")
     public Page<LinkResponse> getAllLinks(Pageable pageable) {
 
         Page<Links> allLinks = linksRepository.findAll(pageable);
@@ -93,6 +100,10 @@ public class LinkServiceImpl implements LinkService {
 
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "links", allEntries = true),
+            @CacheEvict(cacheNames = "links-page", allEntries = true),
+    })
     public void deleteLink(Long id) {
 
         Links link = linksRepository.findById(id).orElseThrow(LinkNotFoundException::new);
