@@ -1,4 +1,4 @@
-### DELETE os links pelo id
+### GET request to example server
 DELETE  http://localhost:5050/api/v1/links/1
 
 ###
