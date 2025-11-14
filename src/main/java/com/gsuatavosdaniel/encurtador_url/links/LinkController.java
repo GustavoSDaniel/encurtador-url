@@ -6,14 +6,18 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 
 @RestController
-@RequestMapping("/api/v1/links")
+@RequestMapping("")
 public class LinkController {
 
     private final LinkService linkService;
@@ -29,6 +33,18 @@ public class LinkController {
         LinkResponse link = linkService.savedLink(linkRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(link);
+
+    }
+
+    @GetMapping("/{shortUrl}")
+    @Operation(summary = "Redireciona para a URL original")
+    public ResponseEntity<String> getLink(@PathVariable String shortUrl){
+
+        String urlOriginal = linkService.getOriginalLink(shortUrl);
+
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .location(URI.create(urlOriginal))
+                .build();
 
     }
 
